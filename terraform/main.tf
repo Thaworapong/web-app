@@ -12,6 +12,16 @@ resource "aws_key_pair" "web_key" {
   public_key = var.ssh_public_key
 }
 
+resource "aws_subnet" "web_subnet" {
+  vpc_id            = "vpc-0ed7051b33dc46751"
+  cidr_block        = "10.0.1.0/24"
+  availability_zone = "us-east-1a"
+
+  tags = {
+    Name = "WebAppSubnet"
+  }
+}
+
 # Create a Security Group to allow SSH and HTTP access
 resource "aws_security_group" "web_sg" {
   name        = "web-app-sg"
@@ -52,7 +62,7 @@ resource "aws_instance" "web_server" {
   instance_type = "t2.micro"
   key_name      = aws_key_pair.web_key.key_name
   security_groups = [aws_security_group.web_sg.name]
-
+  subnet_id = aws_subnet.web_subnet.id
   # User data script to install Docker and run the container
   user_data = <<-EOF
               #!/bin/bash
