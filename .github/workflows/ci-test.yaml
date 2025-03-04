@@ -1,0 +1,27 @@
+name: CI-tests
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run test script 1
+        run: pytest test-scripts/demo-test1.py
+
+      - name: Run test script 2
+        run: pytest test-scripts/demo-test2.py
