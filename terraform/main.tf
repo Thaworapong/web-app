@@ -1,18 +1,22 @@
+# Define the AWS provider
 provider "aws" {
   region = "us-east-1"
 }
 
-# Create a Key Pair for SSH access
+# Define a variable for the SSH public key
+variable "ssh_public_key" {}
+
+# Create an AWS Key Pair using the SSH public key from GitHub Secrets
 resource "aws_key_pair" "web_key" {
   key_name   = "web-app-key"
-  public_key = file("~/.ssh/id_rsa.pub")
+  public_key = var.ssh_public_key
 }
 
-# Create a Security Group to allow HTTP and SSH traffic
+# Create a Security Group to allow SSH and HTTP access
 resource "aws_security_group" "web_sg" {
   name        = "web-app-sg"
   description = "Allow HTTP and SSH access"
-  
+
   ingress {
     from_port   = 22
     to_port     = 22
@@ -49,6 +53,7 @@ resource "aws_instance" "web_server" {
   key_name      = aws_key_pair.web_key.key_name
   security_groups = [aws_security_group.web_sg.name]
 
+  # User data script to install Docker and run the container
   user_data = <<-EOF
               #!/bin/bash
               sudo yum update -y
@@ -63,7 +68,7 @@ resource "aws_instance" "web_server" {
   }
 }
 
-
+# Output the instance's public IP
 output "instance_ip" {
   value = aws_instance.web_server.public_ip
 }
