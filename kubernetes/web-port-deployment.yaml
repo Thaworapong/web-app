@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-portfolio-deployment
+  labels:
+    app: web-portfolio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-portfolio
+  template:
+    metadata:
+      labels:
+        app: web-portfolio
+    spec:
+      containers:
+      - name: web-portfolio
+        image: thaworapong/testing:latest
+        ports:
+        - containerPort: 3000
