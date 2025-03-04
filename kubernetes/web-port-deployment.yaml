@@ -18,4 +18,4 @@ spec:
       - name: web-portfolio
         image: thaworapong/testing:latest
         ports:
-        - containerPort: 3000
+        - containerPort: 80
