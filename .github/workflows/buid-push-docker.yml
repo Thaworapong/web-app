@@ -30,6 +30,9 @@ jobs:
         if: env.exists == 'true'
         run: pip install -r requirements.txt
 
+      - name: Set execute permissions for test scripts
+        run: chmod +x test-scripts/*.py
+
       - name: Run test script 1
         run: test-scripts/demo-test1.py
 
