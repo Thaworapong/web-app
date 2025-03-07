@@ -72,3 +72,25 @@ jobs:
           tags: thaworapong/testing:latest
           platforms: linux/amd64,linux/arm64
 
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build_and_push
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Kubernetes CLI (kubectl)
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.24.0'
+
+      - name: Set up Docker for Kubernetes
+        run: |
+          echo "$DOCKER_CONFIG" > ~/.docker/config.json
+          kubectl config use-context docker-desktop
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f kubernetes/web-port-service.yaml
+          kubectl apply -f kubernetes/web-port-deployment.yaml
+          kubectl set image deployment/web-portfolio web-portfolio=thaworapong/testing:latest  
