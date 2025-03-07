@@ -1,4 +1,4 @@
-name: CI, Build Docker & Deploy to AWS
+name: CI, Build Docker
 
 on:
   push:
